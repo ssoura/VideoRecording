@@ -2,6 +2,7 @@
 const videoElement = document.getElementById("local-video");
 const audioElement = document.getElementById("remote-video");
 
+const startStreamButton = document.getElementById('start-stream');
 const startRecordingButton = document.getElementById('start-recording');
 const stopRecordingButton = document.getElementById('stop-recording');
 
@@ -44,9 +45,10 @@ async function getToken(id, email, name) {
 }
 
 const createConnection = async(token) => {
+  const streamname = document.getElementById('streamname').value;
   const connection = new SariskaMediaTransport.JitsiConnection(
     token,
-    "teststream6",
+    streamname,
     false
   );
 console.log('ot est conn')
@@ -132,12 +134,12 @@ async function main() {
   const token = tokenRes;
   console.log("token", token);
 
-  // document.addEventListener("load", () => {
+  startStreamButton.addEventListener('click', async () => {
     console.log("working..")
     await createConnection(token);
     
 
-  // });
+  });
 
 
 
@@ -146,14 +148,14 @@ async function main() {
 
   startRecordingButton.addEventListener('click', async () => {
     console.log('Starting recording...');
-
+    const streamname = document.getElementById('streamname').value;
     const url = 'https://api.sariska.io/terraform/v1/hooks/srs/startRecording';
     const payload = {
         is_low_latency: true,
         is_recording: true,
         is_vod: true,
         // is_direct_ingestion: true,
-        room_name: "teststream6",
+        room_name: streamname,
     };
 
     try {
@@ -183,10 +185,11 @@ async function main() {
 
   stopRecordingButton.addEventListener('click', async  () => {
     console.log('Stopping recording...');
+    const streamname = document.getElementById('streamname').value;
 
     const url = 'https://api.sariska.io/terraform/v1/hooks/srs/stopRecording';
     const payload = {
-        room_name: "teststream6",
+        room_name: streamname,
         is_low_latency: true,
         is_recording: true,
         is_vod: true,
